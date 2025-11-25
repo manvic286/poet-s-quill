@@ -61,8 +61,8 @@ export default function Dashboard() {
       await createPoem(title, content)
       setIsCreating(false)
     } catch (error) {
-      console.error("[v0] Failed to create poem:", error)
-      alert(error instanceof Error ? error.message : "Failed to create poem")
+      if (process.env.NODE_ENV === "development") console.error("[v0] Failed to create poem:", error)
+      alert("Failed to create poem. Please try again.")
     } finally {
       setIsSaving(false)
     }
@@ -75,8 +75,8 @@ export default function Dashboard() {
       await updatePoem(editingPoem.id, title, content)
       setEditingPoem(null)
     } catch (error) {
-      console.error("[v0] Failed to update poem:", error)
-      alert(error instanceof Error ? error.message : "Failed to update poem")
+      if (process.env.NODE_ENV === "development") console.error("[v0] Failed to update poem:", error)
+      alert("Failed to update poem. Please try again.")
     } finally {
       setIsSaving(false)
     }
@@ -88,8 +88,8 @@ export default function Dashboard() {
     try {
       await deletePoem(id)
     } catch (error) {
-      console.error("[v0] Failed to delete poem:", error)
-      alert(error instanceof Error ? error.message : "Failed to delete poem")
+      if (process.env.NODE_ENV === "development") console.error("[v0] Failed to delete poem:", error)
+      alert("Failed to delete poem. Please try again.")
     } finally {
       setDeletingId(null)
     }

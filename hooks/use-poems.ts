@@ -38,14 +38,16 @@ export function usePoems() {
         .order("created_at", { ascending: false })
 
       if (fetchError) {
-        setError(fetchError.message || "Failed to fetch poems")
+        if (process.env.NODE_ENV === "development") console.error("usePoems fetch error:", fetchError)
+        setError("Failed to fetch poems")
         setLoading(false)
         return
       }
 
       setPoems(data || [])
     } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred")
+      if (process.env.NODE_ENV === "development") console.error("usePoems fetch exception:", err)
+      setError("An unexpected error occurred")
     } finally {
       setLoading(false)
     }
@@ -78,7 +80,8 @@ export function usePoems() {
       .single()
 
     if (insertError) {
-      const errorMsg = insertError.message || "Failed to create poem"
+      if (process.env.NODE_ENV === "development") console.error("createPoem insert error:", insertError)
+      const errorMsg = "Failed to create poem"
       setError(errorMsg)
       throw new Error(errorMsg)
     }
@@ -102,7 +105,8 @@ export function usePoems() {
       .single()
 
     if (updateError) {
-      const errorMsg = updateError.message || "Failed to update poem"
+      if (process.env.NODE_ENV === "development") console.error("updatePoem error:", updateError)
+      const errorMsg = "Failed to update poem"
       setError(errorMsg)
       throw new Error(errorMsg)
     }
@@ -117,7 +121,8 @@ export function usePoems() {
     const { error: deleteError } = await supabase.from("poems").delete().eq("id", id)
 
     if (deleteError) {
-      const errorMsg = deleteError.message || "Failed to delete poem"
+      if (process.env.NODE_ENV === "development") console.error("deletePoem error:", deleteError)
+      const errorMsg = "Failed to delete poem"
       setError(errorMsg)
       throw new Error(errorMsg)
     }

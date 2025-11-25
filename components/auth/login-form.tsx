@@ -24,10 +24,12 @@ export default function LoginForm() {
       const result = await login(email, password)
 
       if (result?.error) {
-        setError(result.error)
+        if (process.env.NODE_ENV === "development") console.error("login error:", result.error)
+        setError("Could not sign in. Please check your credentials and try again.")
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred")
+      if (process.env.NODE_ENV === "development") console.error("login exception:", err)
+      setError("An unexpected error occurred. Please try again.")
     } finally {
       setLoading(false)
     }

@@ -15,35 +15,48 @@ export async function signUp(email: string, password: string, username: string) 
     })
 
     if (signUpError) {
-      return { error: signUpError.message }
+      console.error("[auth] admin.createUser error:", signUpError)
+      try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'admin.createUser', signUpError) } catch {}
+      return { error: "Could not create user. Please try again." }
     }
 
-    const supabase = await getSupabaseServerClient()
-
-    // Create profile
+    // Create profile using the admin (service role) client so the insert bypasses RLS.
+    // The profiles table has an INSERT policy that requires auth.uid() = id —
+    // the newly-created user isn't signed in yet, so the anon/server client would be blocked.
     if (authData.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
+      const { error: profileError } = await adminSupabase.from("profiles").insert({
         id: authData.user.id,
         email,
         username: username || email.split("@")[0],
       })
 
       if (profileError) {
-        return { error: profileError.message }
+        console.error("[auth] creating profile error:", profileError)
+        try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'create profile', profileError) } catch {}
+        return { error: "Could not create user profile. Please try again." }
       }
 
-      const { error: signInError } = await adminSupabase.auth.admin.createSession({
-        user_id: authData.user.id,
+      // Get a server client (anon) to sign the user in after the admin-created account exists
+      const supabase = await getSupabaseServerClient()
+
+      // Sign the user in using the server Supabase client
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       })
 
       if (signInError) {
-        return { error: signInError.message }
+        console.error("[auth] signInWithPassword error:", signInError)
+        try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'signInWithPassword', signInError) } catch {}
+        return { error: "Could not sign in. Please try again." }
       }
     }
 
     redirect("/dashboard")
   } catch (err: any) {
-    return { error: err.message || "An error occurred during signup" }
+    console.error("[auth] signUp exception:", err)
+    try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'signUp exception', err) } catch {}
+    return { error: "An unexpected error occurred during signup" }
   }
 }
 
@@ -57,11 +70,15 @@ export async function login(email: string, password: string) {
     })
 
     if (error) {
-      return { error: error.message }
+      console.error("[auth] signInWithPassword error:", error)
+      try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'login.signInWithPassword', error) } catch {}
+      return { error: "Could not sign in. Please try again." }
     }
 
     redirect("/dashboard")
   } catch (err: any) {
-    return { error: err.message || "An error occurred during login" }
+    console.error("[auth] login exception:", err)
+    try { const { addDevLog } = await import('@/lib/dev/logs'); addDevLog('error', 'login exception', err) } catch {}
+    return { error: "An unexpected error occurred during login" }
   }
 }

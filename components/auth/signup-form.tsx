@@ -24,10 +24,13 @@ export default function SignupForm() {
       const result = await signUp(email, password, username)
 
       if (result?.error) {
-        setError(result.error)
+        // Log detailed error in frontend console during development only
+        if (process.env.NODE_ENV === "development") console.error("signup error:", result.error)
+        setError("Could not complete signup. Please try again.")
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred")
+      if (process.env.NODE_ENV === "development") console.error("signup exception:", err)
+      setError("An unexpected error occurred. Please try again.")
     } finally {
       setLoading(false)
     }

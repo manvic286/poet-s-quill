@@ -3,6 +3,10 @@ import type React from "react"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+// Dev overlay is a client component — import it directly and it will be rendered as a
+// client boundary inside this Server Component. Avoid using `ssr: false` in server
+// components (next/dynamic(..., { ssr: false }) is invalid here).
+import DevOverlay from '@/components/dev/dev-overlay'
 
 // <CHANGE> Updated metadata for poetry app
 import type { Metadata } from "next"
@@ -17,11 +21,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/quill-dark.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/quill-light.png",
         media: "(prefers-color-scheme: dark)",
       },
       {
@@ -42,6 +46,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased`}>
         {children}
+        {process.env.NODE_ENV === 'development' && <DevOverlay />}
         <Analytics />
       </body>
     </html>
