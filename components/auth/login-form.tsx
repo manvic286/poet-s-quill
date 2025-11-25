@@ -37,7 +37,7 @@ export default function LoginForm() {
     <form onSubmit={handleLogin} className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold text-foreground mb-2">Welcome Back</h1>
-        <p className="text-muted-foreground">Sign in to your Poetry Studio</p>
+        <p className="text-muted-foreground">Sign in to Poet's Quill</p>
       </div>
 
       {error && <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg">{error}</div>}

@@ -11,7 +11,7 @@ export function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Poetry Studio</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Poet's Quill</h1>
           <p className="text-muted-foreground">Write, share, and celebrate your poems</p>
         </div>
 

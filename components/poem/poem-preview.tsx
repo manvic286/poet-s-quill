@@ -41,7 +41,7 @@ export default forwardRef<HTMLDivElement, PoemPreviewProps>(function PoemPreview
           </p>
         ))}
       </div>
-      <p className="text-sm mt-auto opacity-75">~ Poetry Studio</p>
+      <p className="text-sm mt-auto opacity-75">~ Poet's Quill</p>
     </div>
   )
 })

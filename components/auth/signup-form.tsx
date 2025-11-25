@@ -36,7 +36,7 @@ export default function SignupForm() {
   return (
     <form onSubmit={handleSignup} className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Join Poetry Studio</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Join Poet's Quill'</h1>
         <p className="text-muted-foreground">Create your account to start writing</p>
       </div>
 

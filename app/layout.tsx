@@ -11,7 +11,7 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Poetry Studio - Write & Share Your Poems",
+  title: "Poet's Quill - Write & Share Your Poems",
   description: "A beautiful app for poets to write, store, and share their poems with custom backgrounds and fonts.",
   generator: "v0.app",
   icons: {

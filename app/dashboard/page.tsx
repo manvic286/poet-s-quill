@@ -109,7 +109,7 @@ export default function Dashboard() {
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-foreground">Poetry Studio</h1>
+            <h1 className="text-2xl font-bold text-foreground">Poet's Quill</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
               <Button variant="ghost" size="sm" onClick={logout}>
