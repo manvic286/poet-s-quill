@@ -166,13 +166,13 @@ export default function PoemShareModal({ poem, onClose }: PoemShareModalProps) {
             <div className="flex-1 rounded-lg overflow-hidden border border-border">
               <div
                 ref={previewRef}
-                className={`${currentFont?.className} w-full aspect-square flex flex-col items-center justify-center p-8 text-center`}
+                className={`${currentFont?.className} w-full min-h-[400px] h-auto flex flex-col items-center justify-center p-8 text-center`}
                 style={{ ...getBackgroundStyle(), color: textColor }}
               >
-                <h1 className="font-bold mb-6 line-clamp-3" style={{ fontSize: `${titleSize}px` }}>
+                <h1 className="font-bold mb-6 line-clamp-3 leading-relaxed p-1" style={{ fontSize: `${titleSize}px` }}>
                   {poem.title}
                 </h1>
-                <div className="leading-relaxed max-h-64 overflow-hidden mb-6" style={{ fontSize: `${bodySize}px` }}>
+                <div className="leading-relaxed mb-6" style={{ fontSize: `${bodySize}px` }}>
                   {poem.content.split("\n").map((line, i) => (
                     <p key={i} className="mb-2">
                       {line}
@@ -256,11 +256,10 @@ export default function PoemShareModal({ poem, onClose }: PoemShareModalProps) {
                         setSelectedPreset(bg.id)
                         setTextColor(bg.textColor)
                       }}
-                      className={`p-3 rounded-lg border-2 transition-all ${
-                        selectedPreset === bg.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50"
-                      }`}
+                      className={`p-3 rounded-lg border-2 transition-all ${selectedPreset === bg.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                        }`}
                     >
                       <div
                         className="w-full h-12 rounded mb-2"
@@ -361,11 +360,10 @@ export default function PoemShareModal({ poem, onClose }: PoemShareModalProps) {
                   <button
                     key={font.id}
                     onClick={() => setSelectedFont(font.id)}
-                    className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
-                      selectedFont === font.id
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
-                    }`}
+                    className={`w-full p-3 rounded-lg border-2 transition-all text-left ${selectedFont === font.id
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-primary/50"
+                      }`}
                   >
                     <span className={`${font.className} text-sm font-medium`}>{font.name}</span>
                   </button>
@@ -417,10 +415,10 @@ export default function PoemShareModal({ poem, onClose }: PoemShareModalProps) {
             </div>
 
             {/* Export button */}
-            <Button 
-              onClick={handleExportImage} 
-              disabled={isExporting || !html2canvasLoaded} 
-              className="w-full gap-2" 
+            <Button
+              onClick={handleExportImage}
+              disabled={isExporting || !html2canvasLoaded}
+              className="w-full gap-2"
               size="lg"
             >
               <Download className="w-4 h-4" />
