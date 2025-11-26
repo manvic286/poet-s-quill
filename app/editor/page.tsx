@@ -1,7 +1,6 @@
-"use client";
+"use client"
 
-export const dynamic = "force-dynamic";
-
+import { Suspense } from "react"
 import { useState, useEffect, useCallback } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,21 @@ import { getSupabaseClient } from "@/lib/supabase/client"
 import { useAuth } from "@/hooks/use-auth"
 import RichTextEditor from "@/components/poem/rich-text-editor"
 
-export default function PoemEditorPage() {
+export default function PoemEditorPageWrapper() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-foreground">Loading...</div>
+        </div>
+      }
+    >
+      <PoemEditorPage />
+    </Suspense>
+  )
+}
+
+function PoemEditorPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, loading: authLoading } = useAuth()
@@ -185,12 +198,7 @@ export default function PoemEditorPage() {
 
       {/* Editor */}
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        <RichTextEditor
-          initialContent={content}
-          onChange={setContent}
-          onSave={savePoem}
-          isSaving={saving}
-        />
+        <RichTextEditor initialContent={content} onChange={setContent} onSave={savePoem} isSaving={saving} />
       </main>
     </div>
   )
