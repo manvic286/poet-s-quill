@@ -90,7 +90,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-foreground">Poet's Quill</h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground hidden sm:inline">{user?.username}</span>
+              <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
               <Button variant="ghost" size="sm" onClick={logout}>
                 <LogOut className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Logout</span>
