@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { usePoems, type Poem } from "@/hooks/use-poems"
 import PoemCard from "@/components/poem/poem-card"
-import PoemEditor from "@/components/poem/poem-editor"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Grid2x2, List, ChevronDown, Plus, LogOut } from "lucide-react"
@@ -15,14 +15,12 @@ type ViewMode = "grid" | "list"
 type SortBy = "newest" | "oldest" | "title-asc" | "title-desc"
 
 export default function Dashboard() {
+  const router = useRouter()
   const { user, loading: authLoading, logout } = useAuth()
-  const { poems, loading: poemsLoading, createPoem, updatePoem, deletePoem } = usePoems()
+  const { poems, loading: poemsLoading, deletePoem } = usePoems()
   const [viewMode, setViewMode] = useState<ViewMode>("grid")
   const [sortBy, setSortBy] = useState<SortBy>("newest")
   const [searchQuery, setSearchQuery] = useState("")
-  const [editingPoem, setEditingPoem] = useState<Poem | null>(null)
-  const [isCreating, setIsCreating] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [sharePoem, setSharePoem] = useState<Poem | null>(null)
 
@@ -55,31 +53,12 @@ export default function Dashboard() {
     return result
   }, [poems, searchQuery, sortBy])
 
-  const handleCreatePoem = async (title: string, content: string) => {
-    setIsSaving(true)
-    try {
-      await createPoem(title, content)
-      setIsCreating(false)
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") console.error("[v0] Failed to create poem:", error)
-      alert("Failed to create poem. Please try again.")
-    } finally {
-      setIsSaving(false)
-    }
+  const handleCreatePoem = () => {
+    router.push("/editor")
   }
 
-  const handleUpdatePoem = async (title: string, content: string) => {
-    if (!editingPoem) return
-    setIsSaving(true)
-    try {
-      await updatePoem(editingPoem.id, title, content)
-      setEditingPoem(null)
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") console.error("[v0] Failed to update poem:", error)
-      alert("Failed to update poem. Please try again.")
-    } finally {
-      setIsSaving(false)
-    }
+  const handleEditPoem = (poem: Poem) => {
+    router.push(`/editor?id=${poem.id}`)
   }
 
   const handleDeletePoem = async (id: string) => {
@@ -122,32 +101,6 @@ export default function Dashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Modal for editing */}
-        {editingPoem && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-background rounded-lg p-6 max-w-2xl w-full max-h-96 overflow-y-auto">
-              <h2 className="text-xl font-bold text-foreground mb-4">Edit Poem</h2>
-              <PoemEditor
-                initialTitle={editingPoem.title}
-                initialContent={editingPoem.content}
-                onSave={handleUpdatePoem}
-                onCancel={() => setEditingPoem(null)}
-                isSaving={isSaving}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Modal for creating */}
-        {isCreating && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-background rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-bold text-foreground mb-4">New Poem</h2>
-              <PoemEditor onSave={handleCreatePoem} onCancel={() => setIsCreating(false)} isSaving={isSaving} />
-            </div>
-          </div>
-        )}
-
         {/* Share modal */}
         {sharePoem && <PoemShareModal poem={sharePoem} onClose={() => setSharePoem(null)} />}
 
@@ -163,7 +116,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex gap-2 flex-wrap">
-            <Button onClick={() => setIsCreating(true)} className="gap-2">
+            <Button onClick={handleCreatePoem} className="gap-2">
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">New Poem</span>
             </Button>
@@ -224,7 +177,7 @@ export default function Dashboard() {
                 ? "No poems yet. Create your first poem to get started!"
                 : "No poems match your search."}
             </p>
-            {poems.length === 0 && <Button onClick={() => setIsCreating(true)}>Create First Poem</Button>}
+            {poems.length === 0 && <Button onClick={handleCreatePoem}>Create First Poem</Button>}
           </div>
         ) : (
           <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-3"}>
@@ -232,7 +185,7 @@ export default function Dashboard() {
               <PoemCard
                 key={poem.id}
                 poem={poem}
-                onEdit={setEditingPoem}
+                onEdit={handleEditPoem}
                 onDelete={handleDeletePoem}
                 onShare={setSharePoem}
                 isDeleting={deletingId === poem.id}

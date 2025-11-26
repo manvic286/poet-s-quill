@@ -172,13 +172,11 @@ export default function PoemShareModal({ poem, onClose }: PoemShareModalProps) {
                 <h1 className="font-bold mb-6 line-clamp-3 leading-relaxed p-1" style={{ fontSize: `${titleSize}px` }}>
                   {poem.title}
                 </h1>
-                <div className="leading-relaxed mb-6" style={{ fontSize: `${bodySize}px` }}>
-                  {poem.content.split("\n").map((line, i) => (
-                    <p key={i} className="mb-2">
-                      {line}
-                    </p>
-                  ))}
-                </div>
+                <div
+                  className="leading-relaxed mb-6 prose dark:prose-invert max-w-none"
+                  style={{ fontSize: `${bodySize}px` }}
+                  dangerouslySetInnerHTML={{ __html: poem.content }}
+                />
                 {writerName && (
                   <p className="mt-auto opacity-75" style={{ fontSize: `${writerSize}px` }}>
                     ~ {writerName}
